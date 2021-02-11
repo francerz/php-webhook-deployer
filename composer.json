@@ -1,5 +1,5 @@
 {
-    "name": "francerz/github-webhook",
+    "name": "francerz/webhook-deployer",
     "type": "library",
     "license": "ISC",
     "authors": [

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3c6caa16a53dde15ed74d57a7899bed3",
+    "content-hash": "297923e2fdc201f4522e7d94767c480e",
     "packages": [
         {
             "name": "francerz/http",
@@ -282,5 +282,8 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
+    "platform-overrides": {
+        "php": "7.2.24"
+    },
     "plugin-api-version": "1.1.0"
 }
