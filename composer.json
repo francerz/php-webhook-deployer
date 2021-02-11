@@ -1,0 +1,20 @@
+{
+    "name": "francerz/github-webhook",
+    "type": "library",
+    "license": "ISC",
+    "authors": [
+        {
+            "name": "Francerz",
+            "email": "francerzam@hotmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Francerz\\WebhookDeployer\\": "src"
+        }
+    },
+    "require": {
+        "francerz/http-utils": "^0.2.15",
+        "francerz/http": "^0.2.6"
+    }
+}
