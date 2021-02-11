@@ -31,7 +31,7 @@ class RepositoryHandler
             }
             return;
         }
-        $path[] = $path;
+        $this->paths[] = $path;
     }
     public function getPaths()
     {
