@@ -30,6 +30,7 @@ class HookHandler
         if (array_key_exists($key, $this->repositories)) {
             return $this->repositories[$key];
         }
+        return null;
     }
 
     public function handle()
