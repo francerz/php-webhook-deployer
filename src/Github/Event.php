@@ -3,18 +3,17 @@
 namespace Francerz\WebhookDeployer\Github;
 
 use Exception;
-use Francerz\Http\Utils\MessageHelper;
+use Francerz\Http\Utils\HttpHelper;
 use Psr\Http\Message\RequestInterface;
 
 class Event
 {
     private $repoName;
-    private $branch;
-    private $event;
+    private $type;
 
     public static function fromHttpRequest(RequestInterface $req)
     {
-        $content = MessageHelper::getContent($req);
+        $content = HttpHelper::getContent($req);
         if (is_array($content)) {
             $content = json_decode($content['payload']);
         }
@@ -22,12 +21,23 @@ class Event
             throw new Exception('Bad payload data');
         }
 
-        $event = new Event();
-        $event->repoName = $content->repository->full_name;
-        $event->branch = explode('/', $content->ref)[2];
-        $event->event = $req->getHeaderLine('X-Github-Event');
+        $event = $req->getHeaderLine('X-Github-Event');
+        switch ($event) {
+            case 'push':
+                $event = new PushEvent();
+                $event->repoName = $content->repository->full_name;
+                $event->branch = explode('/', $content->ref)[2];
+                return $event;
+            default:
+                $event = new Event($event);
+                $event->repoName = $content->repository->full_name;
+                return $event;
+        }
+    }
 
-        return $event;
+    protected function __construct(string $type)
+    {
+        $this->type = $type;
     }
 
     public function getRepositoryName()
@@ -35,18 +45,13 @@ class Event
         return $this->repoName;
     }
 
-    public function getBranch()
+    public function getType()
     {
-        return $this->branch;
-    }
-
-    public function getEvent()
-    {
-        return $this->event;
+        return $this->type;
     }
 
     public function getKey()
     {
-        return "{$this->repoName}@{$this->branch}:{$this->event}";
+        return "{$this->event}:{$this->repoName}";
     }
 }

@@ -10,7 +10,7 @@ class RepositoryHandler
     private $paths = [];
     private $commands = [];
     
-    public function __construct(string $fullname, string $branch = 'master', string $event = 'push')
+    public function __construct(string $fullname, string $event = 'push', string $branch = 'master')
     {
         $this->name = $fullname;
         $this->branch = $branch;
@@ -19,7 +19,7 @@ class RepositoryHandler
     
     public function getKey()
     {
-        return "{$this->name}@{$this->branch}:{$this->event}";
+        return "{$this->event}:{$this->name}@{$this->branch}";
     }
 
 
@@ -41,6 +41,11 @@ class RepositoryHandler
     public function addCommand(string $command)
     {
         $this->commands[] = $command;
+    }
+
+    public function addCommands(array $commands)
+    {
+        foreach ($commands as $c) $this->addCommand($c);
     }
     public function getCommands()
     {
