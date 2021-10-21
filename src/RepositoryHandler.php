@@ -19,7 +19,12 @@ class RepositoryHandler
     
     public function getKey()
     {
-        return "{$this->event}:{$this->name}@{$this->branch}";
+        return "{$this->event}:{$this->name}";
+    }
+
+    public function getBranch()
+    {
+        return $this->branch;
     }
 
 
