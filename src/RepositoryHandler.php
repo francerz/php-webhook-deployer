@@ -10,7 +10,7 @@ class RepositoryHandler
     private $paths = [];
     private $commands = [];
 
-    public function __construct(string $fullname, string $event = 'push', string $branch = 'master')
+    public function __construct(string $fullname, string $event = 'push', ?string $branch = null)
     {
         $this->name = $fullname;
         $this->branch = $branch;
@@ -19,14 +19,11 @@ class RepositoryHandler
 
     public function getKey()
     {
+        if (isset($this->branch)) {
+            return "{$this->event}:{$this->name}@{$this->branch}";
+        }
         return "{$this->event}:{$this->name}";
     }
-
-    public function getBranch()
-    {
-        return $this->branch;
-    }
-
 
     public function addPath(string $path)
     {

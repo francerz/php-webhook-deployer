@@ -25,18 +25,16 @@ class HookHandler
         $this->repositories[$repo->getKey()] = $repo;
     }
 
-    private function findRepository(Event $event): ?RepositoryHandler
+    private function findRepository(string $key): ?RepositoryHandler
     {
-        $key = $event->getKey();
-        if (array_key_exists($key, $this->repositories)) {
-            return $this->repositories[$key];
-        }
-        return null;
+        return $this->repositories[$key] ?? null;
     }
 
-    public function handle()
+    public function handle(?ServerRequestInterface $request = null)
     {
-        $request = $this->http->getCurrentRequest();
+        if (is_null($request)) {
+            $request = $this->http->getCurrentRequest();
+        }
 
         if ($request->getMethod() === RequestMethodInterface::METHOD_GET) {
             return $this->http->createResponse(
@@ -46,16 +44,13 @@ class HookHandler
         }
 
         try {
-            $this->handleHttpRequest($request);
-            return $this->http->createResponse(json_encode([
-                'status' => 'success'
-            ]), StatusCodeInterface::STATUS_OK)
-                ->withHeader('Content-Type', MediaTypes::APPLICATION_JSON);
+            return $this->handleHttpRequest($request);
         } catch (Exception $ex) {
-            return $this->http->createResponse(json_encode([
-                'status' => 'error',
-                'error' => $ex->getMessage()
-            ]), StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR)
+            return $this->http
+                ->createResponse(json_encode([
+                    'status' => 'error',
+                    'error' => $ex->getMessage()
+                ]), StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR)
                 ->withHeader('Content-Type', MediaTypes::APPLICATION_JSON);
         }
 
@@ -65,10 +60,15 @@ class HookHandler
     private function handleHttpRequest(ServerRequestInterface $request)
     {
         $event = Event::fromHttpRequest($request);
-        $repository = $this->findRepository($event);
+        $repository = $this->findRepository($event->getKey());
 
         if (is_null($repository)) {
-            return;
+            return $this->http
+                ->createResponse(json_encode([
+                    'status' => StatusCodeInterface::STATUS_NOT_FOUND,
+                    'error' => "Not Found {$event->getKey()}"
+                ]), StatusCodeInterface::STATUS_NOT_FOUND)
+                ->withHeader('Content-Type', MediaTypes::APPLICATION_JSON);
         }
 
         foreach ($repository->getPaths() as $path) {
@@ -80,5 +80,12 @@ class HookHandler
                 }
             }
         }
+
+        return $this->http
+            ->createResponse(json_encode([
+                'status' => StatusCodeInterface::STATUS_OK,
+                'description' => "Success {$repository->getKey()}"
+            ]))
+            ->withHeader('Content-Type', MediaTypes::APPLICATION_JSON);
     }
 }
