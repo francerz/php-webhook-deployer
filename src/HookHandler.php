@@ -74,9 +74,9 @@ class HookHandler
         foreach ($repository->getPaths() as $path) {
             chdir($path);
             foreach ($repository->getCommands() as $cmd) {
-                exec($cmd, $output, $ret);
+                exec("$cmd 2>&1", $output, $ret);
                 if ($ret != 0) {
-                    throw new Exception(sprintf('Error executing %s in %s.', $cmd, $path));
+                    throw new Exception(sprintf("Error executing %s in %s\n%s", $cmd, $path, $output));
                 }
             }
         }
