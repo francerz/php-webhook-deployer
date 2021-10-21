@@ -9,14 +9,14 @@ class RepositoryHandler
     private $event = '*';
     private $paths = [];
     private $commands = [];
-    
+
     public function __construct(string $fullname, string $event = 'push', string $branch = 'master')
     {
         $this->name = $fullname;
         $this->branch = $branch;
         $this->event = $event;
     }
-    
+
     public function getKey()
     {
         return "{$this->event}:{$this->name}";
@@ -50,7 +50,9 @@ class RepositoryHandler
 
     public function addCommands(array $commands)
     {
-        foreach ($commands as $c) $this->addCommand($c);
+        foreach ($commands as $c) {
+            $this->addCommand($c);
+        }
     }
     public function getCommands()
     {

@@ -25,7 +25,7 @@ class HookHandler
         $this->repositories[$repo->getKey()] = $repo;
     }
 
-    private function findRepository(Event $event) : ?RepositoryHandler
+    private function findRepository(Event $event): ?RepositoryHandler
     {
         $key = $event->getKey();
         if (array_key_exists($key, $this->repositories)) {
@@ -42,7 +42,7 @@ class HookHandler
             return $this->http->createResponse(
                 'Webhook successfully installed. Shown as 404 NOT FOUND to cheat robots (^.^ )',
                 StatusCodeInterface::STATUS_NOT_FOUND
-            );   
+            );
         }
 
         try {
@@ -50,15 +50,15 @@ class HookHandler
             return $this->http->createResponse(json_encode([
                 'status' => 'success'
             ]), StatusCodeInterface::STATUS_OK)
-            ->withHeader('Content-Type', MediaTypes::APPLICATION_JSON);
+                ->withHeader('Content-Type', MediaTypes::APPLICATION_JSON);
         } catch (Exception $ex) {
             return $this->http->createResponse(json_encode([
                 'status' => 'error',
                 'error' => $ex->getMessage()
             ]), StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR)
-            ->withHeader('Content-Type', MediaTypes::APPLICATION_JSON);
+                ->withHeader('Content-Type', MediaTypes::APPLICATION_JSON);
         }
-        
+
         return $this->http->createResponse();
     }
 
@@ -71,7 +71,7 @@ class HookHandler
             return;
         }
 
-        foreach($repository->getPaths() as $path) {
+        foreach ($repository->getPaths() as $path) {
             chdir($path);
             foreach ($repository->getCommands() as $cmd) {
                 exec($cmd, $output, $ret);
