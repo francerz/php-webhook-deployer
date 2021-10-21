@@ -76,7 +76,12 @@ class HookHandler
             foreach ($repository->getCommands() as $cmd) {
                 exec("$cmd 2>&1", $output, $ret);
                 if ($ret != 0) {
-                    throw new Exception(sprintf("Error executing %s in %s\n%s", $cmd, $path, $output));
+                    throw new Exception(sprintf(
+                        "Error executing %s in %s\n%s",
+                        $cmd,
+                        $path,
+                        implode("\n", $output)
+                    ));
                 }
             }
         }
