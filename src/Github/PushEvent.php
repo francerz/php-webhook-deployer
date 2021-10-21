@@ -21,6 +21,6 @@ class PushEvent extends Event
 
     public function getKey()
     {
-        return "{$this->event}:{$this->repoName}@{$this->branch}";
+        return "{$this->getType()}:{$this->getRepositoryName()}@{$this->branch}";
     }
 }
